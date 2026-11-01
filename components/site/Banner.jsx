@@ -68,8 +68,7 @@ export default function Banner({ onOpenRegister }) {
                 <Phone className="w-5 h-5 text-teal-300" />
                 <span>احجز مقعدك الآن</span>
                 <span dir="ltr" className="text-teal-200 font-bold">
-                  +20 150 559 1825
-                </span>
+\                </span>
               </a>
 
               {/* زر تصفح الدورات بتأثير زجاجي واضح */}
