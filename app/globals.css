@@ -1,26 +1,41 @@
 @import "tailwindcss";
 
+/* 1️⃣ إعدادات الألوان الأساسية (خلفية بيضاء مع لمسات اللون البترولي) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-color: #ffffff;
+  --text-color: #171717;
+  --card-bg: #f8fafc;
+  --border-color: #e2e8f0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* 2️⃣ التنسيقات الأساسية للـ Body مع دمج تأثير اللون البترولي كخلفية متدرجة خفيفة */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg-color);
+  /* إضافة توهج خفيف جداً باللون البترولي (#06262a) ممتزج بالخلفية البيضاء */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(6, 38, 42, 0.07) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(19, 78, 85, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-color);
   font-family: Arial, Helvetica, sans-serif;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* 3️⃣ تخصيص شريط التمرير (Scrollbar) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06262a;
 }
