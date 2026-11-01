@@ -1,24 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { MessageSquare, CheckCircle2, Clock, Trash2, Search, ExternalLink } from 'lucide-react';
-
-const initialLeads = [
-  { id: 1, name: 'أحمد محمد', country: 'مصر', phone: '+201000000000', course: 'A1 - المستوى المبتدئ الأول', date: '٢٠٢٦-١١-٠١', status: 'تم التواصل' },
-  { id: 2, name: 'سارة خالد', country: 'السعودية', phone: '+966500000000', course: 'B1 - المستوى المتوسط الأول', date: '٢٠٢٦-١١-٠٢', status: 'قيد الانتظار' },
-  { id: 3, name: 'محمود إبراهيم', country: 'الإمارات', phone: '+971500000000', course: 'A2 - المستوى المبتدئ الثاني', date: '٢٠٢٦-١١-٠٢', status: 'قيد الانتظار' },
-];
+import { MessageSquare, CheckCircle2, Clock, Trash2, Search, ExternalLink, Users } from 'lucide-react';
 
 export default function LeadsManagement() {
-  const [leads, setLeads] = useState(initialLeads);
+  const [leads, setLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // استرجاع الطلبات المحفوظة من localStorage عند تحميل الصفحة
+  // استرجاع الطلبات المحفوظة فقط من localStorage عند تحميل الصفحة
   useEffect(() => {
     const savedLeads = localStorage.getItem('academy_leads');
     if (savedLeads) {
       try {
         const parsed = JSON.parse(savedLeads);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           setLeads(parsed);
         }
       } catch (e) {
@@ -54,16 +48,15 @@ export default function LeadsManagement() {
   // دالة لتنظيف وتجهيز رابط الواتساب الصحيح
   const getWhatsappUrl = (phone, name, course) => {
     if (!phone) return '#';
-    // استخراج الأرقام فقط وإزالة + والمسافات والرموز
     const cleanPhone = phone.toString().replace(/\D/g, '');
     const message = encodeURIComponent(`أهلاً ${name}، نحييك من أكاديمية Speak Türkçe 👋\nبخصوص استفسارك وتسجيلك في ${course}...`);
     return `https://wa.me/${cleanPhone}?text=${message}`;
   };
 
   const filteredLeads = leads.filter(lead => 
-    lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.course.toLowerCase().includes(searchTerm.toLowerCase())
+    (lead.name && lead.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (lead.country && lead.country.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (lead.course && lead.course.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -72,29 +65,29 @@ export default function LeadsManagement() {
       {/* رأس الصفحة */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black">إدارة طلبات الاستعلام (واتساب)</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">إدارة طلبات الاستعلام (واتساب)</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">متابعة الطلاب المهتمين بالتسجيل والراغبين بمعرفة الأسعار.</p>
         </div>
       </div>
 
       {/* شريط البحث */}
-      <div className="flex items-center gap-3 p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm">
+      <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <Search className="w-5 h-5 text-gray-400" />
         <input 
           type="text"
           placeholder="ابحث باسم الطالب، الدولة، أو المستوى..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-transparent text-sm focus:outline-none text-[var(--text-color)]"
+          className="w-full bg-transparent text-sm focus:outline-none text-slate-900"
         />
       </div>
 
       {/* جدول الطلبات */}
-      <div className="rounded-2xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm overflow-hidden">
+      <div className="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right text-sm">
             <thead>
-              <tr className="bg-[var(--bg-color)] border-b border-[var(--border-color)] text-gray-400 text-xs uppercase">
+              <tr className="bg-slate-50 border-b border-slate-200 text-gray-400 text-xs uppercase">
                 <th className="p-4 font-bold">اسم الطالب</th>
                 <th className="p-4 font-bold">الدولة</th>
                 <th className="p-4 font-bold">رقم الهاتف</th>
@@ -104,14 +97,14 @@ export default function LeadsManagement() {
                 <th className="p-4 font-bold text-center">الإجراءات</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-color)] text-gray-600 dark:text-gray-300">
+            <tbody className="divide-y divide-slate-200 text-gray-600">
               {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-[var(--bg-color)]/50 transition-colors">
-                  <td className="p-4 font-bold text-[var(--text-color)]">{lead.name}</td>
+                <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="p-4 font-bold text-slate-900">{lead.name}</td>
                   <td className="p-4">{lead.country}</td>
                   <td className="p-4 font-mono" dir="ltr">{lead.phone}</td>
                   <td className="p-4">
-                    <span className="px-2.5 py-1 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-bold">
+                    <span className="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-600 border border-teal-100 text-xs font-bold">
                       {lead.course}
                     </span>
                   </td>
@@ -121,12 +114,12 @@ export default function LeadsManagement() {
                       onClick={() => toggleStatus(lead.id)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold cursor-pointer transition-colors ${
                         lead.status === 'تم التواصل' 
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20' 
-                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20'
+                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100' 
+                          : 'bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100'
                       }`}
                     >
                       {lead.status === 'تم التواصل' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-                      {lead.status}
+                      {lead.status || 'قيد الانتظار'}
                     </button>
                   </td>
                   <td className="p-4 text-center">
@@ -135,14 +128,14 @@ export default function LeadsManagement() {
                         href={getWhatsappUrl(lead.phone, lead.name, lead.course)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-colors"
+                        className="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors"
                         title="مراسلة عبر واتساب"
                       >
                         <ExternalLink className="w-4 h-4" />
                       </a>
                       <button 
                         onClick={() => handleDelete(lead.id)}
-                        className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
+                        className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
                         title="حذف الطلب"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -153,8 +146,14 @@ export default function LeadsManagement() {
               ))}
               {filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan="7" className="p-8 text-center text-gray-400">
-                    لا توجد طلبات مطابقة للبحث.
+                  <td colSpan="7" className="p-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <p className="text-gray-500 font-medium text-base">لا توجد طلبات تسجیل حقيقية حتى الآن.</p>
+                      <p className="text-xs text-gray-400">ستظهر بيانات الطلاب المسجلين هنا فور قيامهم بإرسال النماذج من الموقع.</p>
+                    </div>
                   </td>
                 </tr>
               )}

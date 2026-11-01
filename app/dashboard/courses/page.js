@@ -1,25 +1,21 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, BookOpen, Clock, Award } from 'lucide-react';
-import CourseForm from '@/components/dashboard/CourseForm';
+import CourseForm '@/components/dashboard/CourseForm';
 
 export default function CoursesManagement() {
-  const [courses, setCourses] = useState([
-    { id: 1, level: 'A1', title: 'المستوى المبتدئ الأول', duration: '٦ أسابيع', lessons: '٢٤ درس', badge: 'الأساس' },
-    { id: 2, level: 'A2', title: 'المستوى المبتدئ الثاني', duration: '٦ أسابيع', lessons: '٢٤ درس', badge: 'شائع' },
-    { id: 3, level: 'B1', title: 'المستوى المتوسط الأول', duration: '٨ أسابيع', lessons: '٣٢ درس', badge: 'الأكثر طلباً' },
-    { id: 4, level: 'B2', title: 'المستوى المتوسط الثاني', duration: '٨ أسابيع', lessons: '٣٢ درس', badge: 'متقدم' },
-    { id: 5, level: 'C1', title: 'المستوى الاحترافي', duration: '١٠ أسابيع', lessons: '٤٠ درس', badge: 'احترافي' },
-  ]);
-
+  const [courses, setCourses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // استرجاع الدورات المحفوظة محلياً عند تحميل الصفحة
+  // استرجاع الدورات المحفوظة محلياً فقط عند تحميل الصفحة
   useEffect(() => {
     const saved = localStorage.getItem('academy_courses');
     if (saved) {
       try {
-        setCourses(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setCourses(parsed);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -108,6 +104,17 @@ export default function CoursesManagement() {
                   </td>
                 </tr>
               ))}
+              {courses.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="p-12 text-center text-gray-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <BookOpen className="w-8 h-8 text-gray-300" />
+                      <p className="font-medium">لا توجد دورات أو مستويات مضافة حتى الآن.</p>
+                      <p className="text-xs text-gray-400">استخدم زر "إضافة مستوى جديد" لإنشاء دورة تعليمية جديدة.</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
