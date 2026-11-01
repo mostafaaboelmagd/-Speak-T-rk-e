@@ -27,23 +27,35 @@ export default function Testimonials() {
       const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
       setReviews(savedReviews);
 
-      // 2. فحص قاطع لحالة التفعيل والتعطيل
+      // 2. فحص قاطع لحالة التفعيل (يتعامل مع النص والقيمة المنطقية بدقة تامة للموبايل والكمبيوتر)
       const statusValue = localStorage.getItem("academy_reviews_enabled");
-      if (statusValue === "false" || statusValue === false) {
+      if (statusValue === "false") {
         setReviewsEnabled(false);
-      } else {
+      } else if (statusValue === "true" || statusValue === null) {
         setReviewsEnabled(true);
+      } else {
+        try {
+          const parsed = JSON.parse(statusValue);
+          setReviewsEnabled(parsed === true);
+        } catch (e) {
+          setReviewsEnabled(true);
+        }
       }
     };
 
+    // التحقق الفوري عند التحميل
     checkReviewsStatus();
 
-    // الاستماع لحدث التحديث وتحديث الحالة كل نصف ثانية لضمان الاستجابة الفورية
+    // الاستماع لجميع أنواع الأحداث لضمان عملها على الهواتف بكفاءة
     window.addEventListener("storage", checkReviewsStatus);
-    const interval = setInterval(checkReviewsStatus, 500);
+    window.addEventListener("custom_review_toggle", checkReviewsStatus);
+    
+    // فحص دوري سريع (كل 300 ملي ثانية) لتحديث حالة الموبايل لحظياً دون الحاجة لتحديث الصفحة
+    const interval = setInterval(checkReviewsStatus, 300);
 
     return () => {
       window.removeEventListener("storage", checkReviewsStatus);
+      window.removeEventListener("custom_review_toggle", checkReviewsStatus);
       clearInterval(interval);
     };
   }, []);
@@ -119,7 +131,7 @@ export default function Testimonials() {
           <p className="text-center text-gray-400 text-sm">كن أول من يشارك تجربته مع الأكاديمية!</p>
         )}
 
-        {/* نموذج إرسال الرأي (يختفي فوراً عند التعطيل) */}
+        {/* نموذج إرسال الرأي (يختفي ويظهر بدقة تامة على كل الأجهزة) */}
         {reviewsEnabled ? (
           <div className="max-w-xl mx-auto p-8 rounded-3xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg space-y-6">
             <h3 className="text-xl font-bold text-center text-[#06262a]">شاركنا رأيك في الأكاديمية ✍️</h3>
@@ -186,7 +198,7 @@ export default function Testimonials() {
                   placeholder="اكتب تجربتك ورأيك بكل صراحة... *"
                   required
                   rows={4}
-                  value={comment}
+                  valuecomment={comment}
                   onChange={(e) => setComment(e.target.value)}
                   className="w-full p-3.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#06262a]"
                 />
@@ -203,7 +215,7 @@ export default function Testimonials() {
             )}
           </div>
         ) : (
-          <div className="max-w-xl mx-auto p-6 rounded-2xl bg-gray-50 border border-gray-200 text-center text-gray-500 text-sm">
+          <div className="max-w-xl mx-auto p-6 rounded-2xl bg-gray-50 border border-gray-200 text-center text-gray-500 text-sm shadow-sm">
             عذراً، استقبال آراء وتقييمات الطلاب موقوف حالياً من قبل الإدارة.
           </div>
         )}

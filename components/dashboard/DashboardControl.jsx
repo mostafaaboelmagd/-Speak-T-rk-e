@@ -11,15 +11,25 @@ export default function DashboardControl() {
     const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
     setReviews(savedReviews);
 
-    const isEnabled = JSON.parse(localStorage.getItem("academy_reviews_enabled") ?? "true");
-    setReviewsEnabled(isEnabled);
+    const statusValue = localStorage.getItem("academy_reviews_enabled");
+    if (statusValue === "false") {
+      setReviewsEnabled(false);
+    } else {
+      setReviewsEnabled(true);
+    }
   }, []);
 
-  // التبديل بين تفعيل وإيقاف نموذج التقييمات للطلاب
+  // التبديل بين تفعيل وإيقاف نموذج التقييمات للطلاب مع إطلاق أحداث فورية للموبايل والكمبيوتر
   const toggleReviewsStatus = () => {
     const updatedStatus = !reviewsEnabled;
     setReviewsEnabled(updatedStatus);
-    localStorage.setItem("academy_reviews_enabled", JSON.stringify(updatedStatus));
+    
+    // حفظ القيمة كنص صريح لضمان قراءتها بسلاسة على الهواتف
+    localStorage.setItem("academy_reviews_enabled", updatedStatus ? "true" : "false");
+    
+    // إطلاق الأحداث لتحديث الواجهة في الحال عبر كل الأجهزة
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("custom_review_toggle"));
   };
 
   // الموافقة على رأي الطالب ونشره على الموقع
@@ -29,6 +39,7 @@ export default function DashboardControl() {
     );
     setReviews(updated);
     localStorage.setItem("academy_reviews", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
   };
 
   // حذف رأي الطالب نهائياً من الداش بورد والموقع
@@ -36,6 +47,7 @@ export default function DashboardControl() {
     const updated = reviews.filter((rev) => rev.id !== id);
     setReviews(updated);
     localStorage.setItem("academy_reviews", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
   };
 
   return (
