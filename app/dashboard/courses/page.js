@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, BookOpen, Clock, Award } from 'lucide-react';
-import CourseForm '@/components/dashboard/CourseForm';
+import CourseForm from '@/components/dashboard/CourseForm';
 
 export default function CoursesManagement() {
   const [courses, setCourses] = useState([]);
