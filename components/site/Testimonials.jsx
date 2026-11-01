@@ -23,31 +23,23 @@ export default function Testimonials() {
 
   useEffect(() => {
     const checkReviewsStatus = () => {
-      // 1. جلب آراء الطلاب
+      // 1. قراءة الآراء
       const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
       setReviews(savedReviews);
 
-      // 2. جلب حالة التفعيل والتعطيل بدقة تامة ومطابقة نصية ومنطقية
+      // 2. فحص قاطع لحالة التفعيل والتعطيل
       const statusValue = localStorage.getItem("academy_reviews_enabled");
-      if (statusValue !== null) {
-        // إذا كانت القيمة النصية false أو تم تخزينها بوولين false
-        if (statusValue === "false" || statusValue === false) {
-          setReviewsEnabled(false);
-        } else {
-          setReviewsEnabled(true);
-        }
+      if (statusValue === "false" || statusValue === false) {
+        setReviewsEnabled(false);
       } else {
         setReviewsEnabled(true);
       }
     };
 
-    // التحقق الفوري عند التحميل
     checkReviewsStatus();
 
-    // الاستماع لحدث التخزين
+    // الاستماع لحدث التحديث وتحديث الحالة كل نصف ثانية لضمان الاستجابة الفورية
     window.addEventListener("storage", checkReviewsStatus);
-
-    // فحص دوري كل نصف ثانية لضمان الاستجابة اللحظية الفورية عند تغيير الحالة من الداشبورد
     const interval = setInterval(checkReviewsStatus, 500);
 
     return () => {
@@ -127,7 +119,7 @@ export default function Testimonials() {
           <p className="text-center text-gray-400 text-sm">كن أول من يشارك تجربته مع الأكاديمية!</p>
         )}
 
-        {/* نموذج إرسال الرأي (يظهر فقط إذا كان مفعلاً تماماً) */}
+        {/* نموذج إرسال الرأي (يختفي فوراً عند التعطيل) */}
         {reviewsEnabled ? (
           <div className="max-w-xl mx-auto p-8 rounded-3xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg space-y-6">
             <h3 className="text-xl font-bold text-center text-[#06262a]">شاركنا رأيك في الأكاديمية ✍️</h3>
