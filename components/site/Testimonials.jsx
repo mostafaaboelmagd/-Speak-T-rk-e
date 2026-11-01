@@ -23,20 +23,36 @@ export default function Testimonials() {
 
   useEffect(() => {
     const checkReviewsStatus = () => {
+      // 1. جلب آراء الطلاب
       const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
       setReviews(savedReviews);
 
-      const isEnabled = JSON.parse(localStorage.getItem("academy_reviews_enabled") ?? "true");
-      setReviewsEnabled(isEnabled);
+      // 2. جلب حالة التفعيل والتعطيل بدقة تامة ومطابقة نصية ومنطقية
+      const statusValue = localStorage.getItem("academy_reviews_enabled");
+      if (statusValue !== null) {
+        // إذا كانت القيمة النصية false أو تم تخزينها بوولين false
+        if (statusValue === "false" || statusValue === false) {
+          setReviewsEnabled(false);
+        } else {
+          setReviewsEnabled(true);
+        }
+      } else {
+        setReviewsEnabled(true);
+      }
     };
 
-    // التحقق عند التحميل الأول
+    // التحقق الفوري عند التحميل
     checkReviewsStatus();
 
-    // الاستماع لأي تحديث أو حدث يتم إطلاقه من لوحة التحكم (DashboardControl)
+    // الاستماع لحدث التخزين
     window.addEventListener("storage", checkReviewsStatus);
+
+    // فحص دوري كل نصف ثانية لضمان الاستجابة اللحظية الفورية عند تغيير الحالة من الداشبورد
+    const interval = setInterval(checkReviewsStatus, 500);
+
     return () => {
       window.removeEventListener("storage", checkReviewsStatus);
+      clearInterval(interval);
     };
   }, []);
 
@@ -50,7 +66,7 @@ export default function Testimonials() {
       course: courseName,
       comment,
       rating,
-      status: "pending", // يذهب للداش بورد للمراجعة أولاً
+      status: "pending",
       createdAt: new Date().toISOString()
     };
 
@@ -111,7 +127,7 @@ export default function Testimonials() {
           <p className="text-center text-gray-400 text-sm">كن أول من يشارك تجربته مع الأكاديمية!</p>
         )}
 
-        {/* نموذج إرسال الرأي (يظهر فقط إذا كان مفعلاً من الداشبورد) */}
+        {/* نموذج إرسال الرأي (يظهر فقط إذا كان مفعلاً تماماً) */}
         {reviewsEnabled ? (
           <div className="max-w-xl mx-auto p-8 rounded-3xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg space-y-6">
             <h3 className="text-xl font-bold text-center text-[#06262a]">شاركنا رأيك في الأكاديمية ✍️</h3>
