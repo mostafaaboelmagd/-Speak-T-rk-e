@@ -59,16 +59,18 @@ export default function Banner({ onOpenRegister }) {
             {/* الأزرار بوضوح وإضاءة ممتازة */}
             <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col items-center justify-center gap-4 w-full pt-4 lg:pt-0">
               {/* زر احجز مقعدك الآن بلون بترولي فاتح وواضح */}
-              <button
-                onClick={onOpenRegister}
-                className="w-full sm:w-auto lg:w-full px-8 py-4 rounded-2xl bg-[#0d4b53] hover:bg-[#115e68] text-white font-black text-base border border-teal-400/50 shadow-xl shadow-black/40 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer"
+              <a
+                href="https://wa.me/201505591825?text=مرحباً،%20أرغب%20في%20التسجيل%20وحجز%20مقعد%20في%20أكاديمية%20Speak%20Türkçe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto lg:w-full px-8 py-4 rounded-2xl bg-[#0d4b53] hover:bg-[#115e68] text-white font-black text-base border border-teal-400/50 shadow-xl shadow-black/40 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer no-underline"
               >
                 <Phone className="w-5 h-5 text-teal-300" />
                 <span>احجز مقعدك الآن</span>
                 <span dir="ltr" className="text-teal-200 font-bold">
                   +20 150 559 1825
                 </span>
-              </button>
+              </a>
 
               {/* زر تصفح الدورات بتأثير زجاجي واضح */}
               <a
