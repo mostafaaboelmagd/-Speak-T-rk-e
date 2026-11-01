@@ -22,11 +22,22 @@ export default function Testimonials() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
-    setReviews(savedReviews);
+    const checkReviewsStatus = () => {
+      const savedReviews = JSON.parse(localStorage.getItem("academy_reviews") || "[]");
+      setReviews(savedReviews);
 
-    const isEnabled = JSON.parse(localStorage.getItem("academy_reviews_enabled") ?? "true");
-    setReviewsEnabled(isEnabled);
+      const isEnabled = JSON.parse(localStorage.getItem("academy_reviews_enabled") ?? "true");
+      setReviewsEnabled(isEnabled);
+    };
+
+    // التحقق عند التحميل الأول
+    checkReviewsStatus();
+
+    // الاستماع لأي تحديث أو حدث يتم إطلاقه من لوحة التحكم (DashboardControl)
+    window.addEventListener("storage", checkReviewsStatus);
+    return () => {
+      window.removeEventListener("storage", checkReviewsStatus);
+    };
   }, []);
 
   const handleSubmit = (e) => {
@@ -46,6 +57,7 @@ export default function Testimonials() {
     const updatedReviews = [newReview, ...reviews];
     setReviews(updatedReviews);
     localStorage.setItem("academy_reviews", JSON.stringify(updatedReviews));
+    window.dispatchEvent(new Event("storage"));
 
     setStudentName("");
     setCourseName("");
@@ -99,8 +111,8 @@ export default function Testimonials() {
           <p className="text-center text-gray-400 text-sm">كن أول من يشارك تجربته مع الأكاديمية!</p>
         )}
 
-        {/* نموذج إرسال الرأي */}
-        {reviewsEnabled && (
+        {/* نموذج إرسال الرأي (يظهر فقط إذا كان مفعلاً من الداشبورد) */}
+        {reviewsEnabled ? (
           <div className="max-w-xl mx-auto p-8 rounded-3xl bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg space-y-6">
             <h3 className="text-xl font-bold text-center text-[#06262a]">شاركنا رأيك في الأكاديمية ✍️</h3>
             
@@ -181,6 +193,10 @@ export default function Testimonials() {
                 </button>
               </form>
             )}
+          </div>
+        ) : (
+          <div className="max-w-xl mx-auto p-6 rounded-2xl bg-gray-50 border border-gray-200 text-center text-gray-500 text-sm">
+            عذراً، استقبال آراء وتقييمات الطلاب موقوف حالياً من قبل الإدارة.
           </div>
         )}
 
