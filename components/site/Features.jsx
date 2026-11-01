@@ -66,19 +66,22 @@ export default function Features() {
             return (
               <div 
                 key={index}
-                className="group relative p-6 rounded-2xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/40 hover:border-teal-500/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start overflow-hidden"
+                className="group relative p-6 rounded-2xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/40 hover:border-teal-500/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 {/* تأثير خلفية مضيئة خفيفة عند الهوفر */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full blur-xl group-hover:bg-teal-500/15 transition-all duration-500 pointer-events-none"></div>
 
-                {/* حاوية الأيقونة */}
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/10 to-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-600 mb-4 group-hover:scale-105 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <IconComponent className="w-6 h-6" />
+                {/* رأس الكارت: الأيقونة بجانب العنوان */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/10 to-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-600 flex-shrink-0 group-hover:scale-105 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-black text-slate-900 group-hover:text-teal-600 transition-colors leading-snug">
+                    {feature.title}
+                  </h3>
                 </div>
 
-                <h3 className="text-lg font-black text-slate-900 mb-2 group-hover:text-teal-600 transition-colors">
-                  {feature.title}
-                </h3>
+                {/* الوصف */}
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   {feature.description}
                 </p>
